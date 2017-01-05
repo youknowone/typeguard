@@ -338,7 +338,7 @@ if Type is not None:
     origin_type_checkers[Type] = check_class
 
 
-def check_type(argname: str, value, expected_type, memo: _CallMemo) -> None:
+def check_type(argname: str, value: Any, expected_type, memo: _CallMemo) -> None:
     """
     Ensure that ``value`` matches ``expected_type``.
 
@@ -390,6 +390,9 @@ def check_type(argname: str, value, expected_type, memo: _CallMemo) -> None:
 
 def check_return_type(retval, memo: _CallMemo) -> bool:
     if 'return' in memo.type_hints:
+        import asyncio
+        if inspect.isawaitable(retval):
+            return True
         check_type('the return value', retval, memo.type_hints['return'], memo)
 
     return True
